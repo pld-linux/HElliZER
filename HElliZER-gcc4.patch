@@ -1,0 +1,130 @@
+--- HElliZER-1.0/3d.cpp.orig	1999-12-21 05:47:30.000000000 +0100
++++ HElliZER-1.0/3d.cpp	2006-05-20 03:17:19.567470250 +0200
+@@ -22,6 +22,7 @@
+ #include "video.h"
+ #include "resource.h"
+ #include "parts.h"
++#include <string.h>
+ 
+ int x1,x2,ls,zs,txs,tys;
+ 
+@@ -102,7 +103,7 @@
+     if(x2 > offset && x1<offset+vidSizeX) {
+       if(x2 > offset+vidSizeX-2) x2 = offset+vidSizeX-2;
+       if(x1<offset) {
+-        register tmp = offset-x1;
++        register int tmp = offset-x1;
+         DrawLineShadow( offset, leftz+zs*tmp, leftl+ls*tmp,
+                   lefttx+txs*tmp, leftty+tys*tmp );
+       }
+@@ -126,7 +127,7 @@
+     if(x2 > offset && x1<offset+vidSizeX-1) {
+       if(x2 > offset+vidSizeX-2) x2 = offset+vidSizeX-2;
+       if(x1<offset) {
+-        register tmp = offset-x1;
++        register int tmp = offset-x1;
+         DrawLineNoShadow( offset, leftz+zs*tmp, leftl+ls*tmp,
+                   lefttx+txs*tmp, leftty+tys*tmp );
+       }
+@@ -150,7 +151,7 @@
+     if(x2 > offset && x1<offset+vidSizeX) {
+       if(x2 > offset+vidSizeX-2) x2 = offset+vidSizeX-2;
+       if(x1<offset) {
+-        register tmp = offset-x1;
++        register int tmp = offset-x1;
+         DrawLineNoTexture( offset, leftz+zs*tmp,
+                            leftl+ls*tmp, 0, 0 );
+       }
+@@ -164,18 +165,18 @@
+   }
+ }
+ 
+-inline FacedObject::setDrawLineShadow( PAGE color, PAGE bw, int shadow_offset )
++inline void FacedObject::setDrawLineShadow( PAGE color, PAGE bw, int shadow_offset )
+ {
+   DrawFace = &DrawFaceShadow;
+   shadow = bw - shadow_offset;
+ }
+ 
+-inline FacedObject::setDrawLineNoShadow( PAGE color, PAGE bw )
++inline void FacedObject::setDrawLineNoShadow( PAGE color, PAGE bw )
+ {
+   DrawFace = &DrawFaceNoShadow;
+ }
+ 
+-inline FacedObject::setDrawLineNoTexture( PAGE bw )
++inline void FacedObject::setDrawLineNoTexture( PAGE bw )
+ {
+   DrawFace = &DrawFaceNoTexture;
+ }
+@@ -263,7 +264,7 @@
+       offset = 0; tmpr += y0;
+     }
+     {
+-      register tmp = (rightxs-leftxs)>>8;
++      register int tmp = (rightxs-leftxs)>>8;
+       if( tmp ) {
+         ls = (rightls-leftls)/tmp         << 8;
+         zs = (rightzs-leftzs)/tmp         << 8;
+@@ -341,7 +342,7 @@
+     tmpr -= y2-vidSizeY;
+   }
+   {
+-    register tmp = (rightxs-leftxs)>>8;
++    register int tmp = (rightxs-leftxs)>>8;
+     if( tmp ) {
+       ls = (rightls-leftls)/tmp         << 8;
+       zs = (rightzs-leftzs)/tmp         << 8;
+--- HElliZER-1.0/3d.h.orig	1999-12-21 05:47:29.000000000 +0100
++++ HElliZER-1.0/3d.h	2006-05-20 03:16:04.614786000 +0200
+@@ -145,9 +145,9 @@
+               bool morphTexture );
+   void MoveAbs( int dx, int dy, int dz );
+   void RotateAbs( int rx, int ry, int rz );
+-  setDrawLineShadow( PAGE color, PAGE bw, int shadow_offset );
+-  setDrawLineNoShadow( PAGE color, PAGE bw );
+-  setDrawLineNoTexture( PAGE bw );
++  void setDrawLineShadow( PAGE color, PAGE bw, int shadow_offset );
++  void setDrawLineNoShadow( PAGE color, PAGE bw );
++  void setDrawLineNoTexture( PAGE bw );
+ };
+ 
+ #endif
+--- HElliZER-1.0/image.cpp.orig	1999-12-21 05:47:29.000000000 +0100
++++ HElliZER-1.0/image.cpp	2006-05-20 03:18:43.412710250 +0200
+@@ -188,7 +188,7 @@
+   uchar* from = data + offsety*bytesPerLine + offsetx/8;
+   uchar* to = page + y*vidBytesPerLine + x;
+   for( int i=0; i<sizey; i++ ) {
+-    register mask = 0x80 >> (offsetx&7);
++    register int mask = 0x80 >> (offsetx&7);
+     for( int j=0,k=0; j<sizex; j++ ) {
+       if( from[k] & mask ) to[j]=color;
+       mask >>= 1; if( !mask ) { mask = 0x80; k++; }
+@@ -252,7 +252,7 @@
+   int stepy = (sizeY<<16)/h; y=0;
+   for( int i=0; i<size_y; i++, y+=stepy ) {
+     from1 = from+(y>>16)*bytesPerLine;
+-    register stepx = (sizeX<<16)/w;
++    register int stepx = (sizeX<<16)/w;
+     for( int j=0, x=0; j<size_x; j++, x+=stepx ) {
+       if( from1[x>>16] ) to[j] = from1[x>>16];
+     }
+@@ -283,7 +283,7 @@
+   int stepy = (sizeY<<16)/h; y=0;
+   for( int i=0; i<size_y; i++, y+=stepy ) {
+     from1 = from+(y>>16)*bytesPerLine;
+-    register stepx = (sizeX<<16)/w;
++    register int stepx = (sizeX<<16)/w;
+     for( int j=0, x=0; j<size_x; j++, x+=stepx ) {
+       if( from1[x>>16] ) to[j] = color;
+     }
+@@ -314,7 +314,7 @@
+   int stepy = (sizeY<<16)/h; y=0;
+   for( int i=0; i<size_y; i++, y+=stepy ) {
+     from1 = from+(y>>16)*bytesPerLine;
+-    register stepx = (sizeX<<16)/w;
++    register int stepx = (sizeX<<16)/w;
+     for( int j=0, x=0; j<size_x; j++, x+=stepx ) {
+       to[j] = from1[x>>16]+to[j] <= 255 ? from1[x>>16]+to[j] : 255;
+     }
