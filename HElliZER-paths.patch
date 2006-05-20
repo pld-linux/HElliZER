@@ -1,0 +1,37 @@
+--- HElliZER-1.0/HElliZER.cpp.orig	1999-12-21 05:47:30.000000000 +0100
++++ HElliZER-1.0/HElliZER.cpp	2006-05-20 09:34:36.578195000 +0200
+@@ -25,7 +25,7 @@
+ 
+ int main( int argc, char* argv[] )
+ {
+-  resInit("dos/"PROJECT_NAME".EXE");
++  resInit(DATADIR"/dos/"PROJECT_NAME".EXE");
+   bool saveconfig=false;
+   if( argc>2 ) {
+     if ( !strcmp( argv[1], "-width" ) ) {
+--- HElliZER-1.0/resource.cpp.orig	1999-12-21 05:47:29.000000000 +0100
++++ HElliZER-1.0/resource.cpp	2006-05-20 09:38:15.803895750 +0200
+@@ -75,8 +75,12 @@
+ 
+ FILE* resOpenFile( char* name )
+ {
++  char pathname[strlen(name) + strlen(DATADIR) + 2];
++  strcpy(pathname, DATADIR);
++  strcat(pathname, "/");
++  strcat(pathname, name);
+   current_file=-1;
+-  fp = fopen( name, "rb" );
++  fp = fopen( pathname, "rb" );
+   if(!fp) {
+ //    printf( "Cannot open file %s\n", name );
+     for( current_file=0; current_file<resource_number; current_file++ ) {
+--- HElliZER-1.0/misc.h.orig	1999-12-21 05:47:29.000000000 +0100
++++ HElliZER-1.0/misc.h	2006-05-20 09:38:47.953905000 +0200
+@@ -43,6 +43,7 @@
+ #define sqr(x)  ((x)*(x))
+ 
+ #define PROJECT_NAME    "HElliZER"
++#define DATADIR         "/usr/share/"PROJECT_NAME
+ 
+ #define cosSteps     4096
+ #define cosScale     6
