@@ -1,5 +1,5 @@
 Summary:	HElliZER - SDL demo
-Summary(pl):	HElliZER - demo dla SDL-a
+Summary(pl.UTF-8):   HElliZER - demo dla SDL-a
 Name:		HElliZER
 Version:	1.0
 Release:	1
@@ -19,8 +19,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 HElliZER: the first portable demo in the world.
 
-%description -l pl
-HElliZER - pierwsze przeno∂ne demo.
+%description -l pl.UTF-8
+HElliZER - pierwsze przeno≈õne demo.
 
 %prep
 %setup -q
