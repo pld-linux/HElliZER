@@ -1,5 +1,5 @@
 Summary:	HElliZER - SDL demo
-Summary(pl.UTF-8):   HElliZER - demo dla SDL-a
+Summary(pl.UTF-8):	HElliZER - demo dla SDL-a
 Name:		HElliZER
 Version:	1.0
 Release:	1
